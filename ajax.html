@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../base.css"/>
+</head>
+<body>
+    <div ng-controller="MyController">
+        {{ message }}
+        <ul>
+            <li ng-repeat="item in data.items">{{item.full_name}}</li>
+        </ul>
+    </div>
+    <script src="bower_components/angular/angular.js"></script>
+    <script>
+        angular.module('myApp', []).controller('MyController', function ($scope) {
+            $scope.message = 'Hello World!';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://api.github.com/search/repositories?q=nodejs');
+            xhr.setRequestHeader('accept', 'application/json');
+            xhr.addEventListener('readystatechange', function () {
+                if( xhr.readyState === 4 && xhr.status === 200 ) {
+                    var obj = JSON.parse(xhr.responseText);
+                    console.log(obj);
+                    $scope.$apply(function () {
+                        $scope.data = obj;
+                    });
+                }
+            });
+            xhr.send();
+
+        });
+    </script>
+</body>
+</html>

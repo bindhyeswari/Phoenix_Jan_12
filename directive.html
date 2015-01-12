@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .my-directive {
+            padding: 1em;
+            background-color: #eee;
+            margin: 1em;
+        }
+    </style>
+    <link rel="stylesheet" href="base.css"/>
+</head>
+<body>
+<div ng-controller="MyController">
+    {{ message }}
+    <div class="my-directive" info="sc"></div>
+</div>
+
+<div class="my-directive"></div>
+
+<div ng-controller="Controller2">
+    {{data}}
+</div>
+<script src="test.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script>
+    angular.module('myApp', []).controller('Controller2', function ($scope) {
+        console.log('running Controller2 functions');
+    }).controller('MyController', function ($scope) {
+        $scope.message = 'Hello World from MYController (not from the directive)';
+        $scope.data = 'MyController\'s Data';
+        $scope.sc = 10;
+        console.log('running MyController functions');
+    }).run(function ($rootScope) {
+        $rootScope.data = 'Data from the $rootScope';
+        console.log('firing the .run() function ... ');
+    }).config(function () {
+        console.log('configuring the app .... ');
+    }).directive('myDirective', function () {
+        return { // Directive Definition Object
+            restrict: 'C',
+            scope: false, // true(inherited), false (direct), or {} -- isolate
+            controller: function ($scope) {
+                $scope.message = 'Hello World from myDirective\'s controller';
+                $scope.data = 'Data from directive now.';
+                console.log('running Directive functions');
+            },
+            template: '<div></div>',
+            link: function (scope, element, attrs) {
+                element.on('click', function () {
+                    console.log(scope.data);
+                    console.log(element[0]);
+                    console.log(attrs.info);
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>
