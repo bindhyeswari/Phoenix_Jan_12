@@ -19,7 +19,7 @@
             // return a directive definition object
             return {
                 restrict: 'E',
-                template: '<button>Print To Console</button><ul></ul><div>{{message}}</div>',
+                template: '<button>Print To Console</button><ul><li ng-repeat="item in files">{{item.name}}</li></ul><div>{{message}}</div>',
                 link: function (scope, element, attrs) {
                     /*element.on('click', function () {
                         console.log('Hello World from the fileuploader directive');
@@ -30,17 +30,15 @@
 
                     element[0].firstElementChild.addEventListener('click', function () {
                         console.log(scope.message);
-                        scope.message = 'Hmmm';
+
                         var inp = document.createElement('input');
                         inp.setAttribute('type', 'file');
                         inp.setAttribute('multiple', 'multiple');
                         inp.click();
                         inp.addEventListener('change', function () {
-                            ul.innerHTML = '';
-                            Array.prototype.forEach.call(this.files, function (eachFile) {
-                                var li = document.createElement('li');
-                                li.innerHTML = eachFile.name;
-                                ul.appendChild(li);
+                            var self = this;
+                            scope.$apply(function () {
+                                scope.files = self.files;
                             });
                         });
                     });
